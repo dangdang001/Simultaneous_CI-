@@ -2,12 +2,13 @@
 ##################################################################
 #install.packages("R2Cuba")
 
-time.start<-proc.time()
-
 rm(list = ls())
-setwd("/media/donglei/New Volume/Users/Donglei/Documents")
+setwd("/media/donglei/New Volume/Users/Donglei/Documents/Simu_CI/")
 library(R2Cuba)
 library(parallel)
+
+
+time.start<-proc.time()
 
 # Calculate the number of cores
 no_cores <- detectCores() - 2
@@ -47,7 +48,7 @@ sd.all <- c((max(mu.R1,mu.R2,mu.T)-min(mu.R1,mu.R2,mu.T))/1.5,seq(2,12,2))
 # sd.all <- c((max(mu.R1,mu.R2,mu.T)-min(mu.R1,mu.R2,mu.T))/1.5,2)
 # sd.all <- 8
 ksce <- length(sd.all)
-repet <- 2
+repet <- 50
 
 Arcd.data <- matrix(NA,nrow=repet,ncol=n*5*ksce)
 Arcd.mean <- matrix(NA,nrow=repet,ncol=3*ksce)
