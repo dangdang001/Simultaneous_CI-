@@ -1,0 +1,19 @@
+
+
+1. Keep connection alive between server and local machine (Linux/Mac), two approach
+
+a. on local
+
+1) sudo nano /etc/ssh/ssh_config
+2) add: 
+Host *
+ServerAliveInterval 120
+
+This is how often, in seconds, it should send a keepalive message to the server. If that doesn't work then train a monkey to press enter every two minutes while you work.
+
+b. on server
+
+1) sudo nano /etc/ssh/ssh_config
+2) add: 
+Host *
+ClientAliveInterval 120
