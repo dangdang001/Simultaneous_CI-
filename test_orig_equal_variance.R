@@ -13,11 +13,11 @@ time.start<-proc.time()
 # Calculate the number of cores
 no_cores <- detectCores() - 1
 
-mu.R1 <- 0
-mu.R2 <- 2
-mu.T <- 1
-rsd21 <- 1.25  #single 0.5  2   1.25 0.8 # 0.8  0.8 1.25 1.25 # 0.8  0.8 1.25 1.25
-rsdT1 <- 2     #single 1.25 0.8 0.5  2   # 1.25 0.8 0.8 1.25  # 0.5  2   0.5  2
+mu.R1 <- 99
+mu.R2 <- 101
+mu.T <- 100
+rsd21 <- 1  
+rsdT1 <- 1     
 # sd.R1 <- 4
 # sd.R2 <- sd.R1*rsd21
 # sd.T <- sd.R1*rsdT1
@@ -339,11 +339,11 @@ Arcd <- cbind(Arcd.data, Arcd.mean, Arcd.std, Arcd.sig, Arcd.simuCI1)
 summ <- round(cbind(summ.sig, summ.simuCI1),3)
 
 
-rundate <- c("0627")
+rundate <- c("0628")
 
 
-write.csv(Arcd, paste("Arcd_n",n,"_",mu.R1,"_",mu.R2,"_",mu.T,"_equal_var_","_sdR1_",round(sd.all[1],2),"_",round(sd.all[ksce],2),"_rp",repet,"_",rundate,"_v2.csv",sep=""))
-write.csv(summ, paste("summ_n",n,"_",mu.R1,"_",mu.R2,"_",mu.T,"_equal_var_","_sdR1_",round(sd.all[1],2),"_",round(sd.all[ksce],2),"_rp",repet,"_",rundate,"_v2.csv",sep=""))
+write.csv(Arcd, paste("Arcd_n",n,"_",mu.R1,"_",mu.R2,"_",mu.T,"_equal_var","_sdR1_",round(sd.all[1],2),"_",round(sd.all[ksce],2),"_rp",repet,"_",rundate,"_v2.csv",sep=""))
+write.csv(summ, paste("summ_n",n,"_",mu.R1,"_",mu.R2,"_",mu.T,"_equal_var","_sdR1_",round(sd.all[1],2),"_",round(sd.all[ksce],2),"_rp",repet,"_",rundate,"_v2.csv",sep=""))
 
 
 time.end<-proc.time()
