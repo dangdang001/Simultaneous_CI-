@@ -3,10 +3,10 @@ rm(list=ls())
 library(ggplot2)
 library(gridExtra)
 
-#setwd("//fda.gov/wodc/CDER/Users05/Donglei.Yin/Result")
-setwd("C:/Users/Donglei/Documents/2018 summer intern at FDA/Simu_CI")
+setwd("//fda.gov/wodc/CDER/Users05/Donglei.Yin/Result")
+#setwd("C:/Users/Donglei/Documents/2018 summer intern at FDA/Simu_CI")
 
-filename='n10_99_101_100_equal_var_sdR1_1.33_12_rp200_0628_v2'
+filename='n10_0_2_1_equal_var__sdR1_1.33_12_rp1000_0627_v2'
 
 simu_result<-read.csv(paste0("./summ_",filename, ".csv"),header=T)[,-1]
 
@@ -32,7 +32,7 @@ colnames(CR2)=c("SD","Original version","Integrated version","Least favorable ve
 
 Power.t <- reshape(Power, 
                    varying = c("Pairwise comparison","Original version","Integrated version","Least favorable version"), 
-                   v.names = "Power",
+                   v.names = "Value",
                    timevar = "Method", 
                    times = c("Pairwise comparison","Original version","Integrated version","Least favorable version"), 
                    new.row.names = 1:1000,
@@ -40,7 +40,7 @@ Power.t <- reshape(Power,
 
 CR1.t <- reshape(CR1, 
                  varying = c("Original version","Integrated version","Least favorable version"), 
-                 v.names = "Coverage_Rate_1",
+                 v.names = "Value",
                  timevar = "Method", 
                  times = c("Original version","Integrated version","Least favorable version"), 
                  new.row.names = 1:1000,
@@ -48,52 +48,29 @@ CR1.t <- reshape(CR1,
 
 CR2.t <- reshape(CR2, 
                  varying = c("Original version","Integrated version","Least favorable version"), 
-                 v.names = "Coverage_Rate_2",
+                 v.names = "Value",
                  timevar = "Method", 
                  times = c("Original version","Integrated version","Least favorable version"), 
                  new.row.names = 1:1000,
                  direction = "long")
 
+Power.t$Group<-"Power"
+CR1.t$Group<-"Coverage Rate 1"
+CR2.t$Group<-"Coverage Rate 2"
 
-#out<-Reduce(function(x, y) merge(x, y, by=c("SD","Method","id")), list(Power.t,CR1.t,CR2.t))
 
-out.temp<-merge(x=Power.t, y=CR1.t, by=c("SD","Method","id"), all.x=TRUE)
-out<-merge(x=out.temp, y=CR2.t, by=c("SD","Method","id"), all.x=TRUE)
+out<-rbind(Power.t,CR1.t,CR2.t)
 
-power.plot <- ggplot(data=out, aes(x=SD, y=Power, group = Method, colour=Method))+
+out$Group_f = factor(out$Group, levels=c('Power','Coverage Rate 1','Coverage Rate 2'))
+out$Method = factor(out$Method, levels=c('Original version','Integrated version','Least favorable version','Pairwise comparison'))
+
+plot <- ggplot(data=out, aes(x=SD, y=Value, group = Method, colour=Method,shape=Method))+
   geom_point()+
   geom_line()+
+  facet_grid(.~Group_f,scales="free_y")+
   theme(legend.position="bottom")+
-  labs(x="SD",y="Power")
+  labs(x="SD",y="Value")
 
 
-CR1.plot <- ggplot(data=out, aes(x=SD, y=Coverage_Rate_1, group = Method, colour=Method))+
-  geom_point()+
-  geom_line()+
-  theme(legend.position="bottom")+
-  labs(x="SD",y="Coverage Rate (CI1)")
+ggsave(paste0("./Plot_",filename,".png"), height=6, width=12, units='in', dpi=2000)
 
-CR2.plot <- ggplot(data=out, aes(x=SD, y=Coverage_Rate_2, group = Method, colour=Method))+
-  geom_point()+
-  geom_line()+
-  theme(legend.position="bottom")+
-  labs(x="SD",y="Coverage Rate (CI2)")
-
-
-
-g_legend<-function(a.gplot){
-  tmp <- ggplot_gtable(ggplot_build(a.gplot))
-  leg <- which(sapply(tmp$grobs, function(x) x$name) == "guide-box")
-  legend <- tmp$grobs[[leg]]
-  return(legend)}
-
-mylegend<-g_legend(power.plot)
-
-
-p <- grid.arrange(arrangeGrob(power.plot + theme(legend.position="none"),
-                               CR1.plot + theme(legend.position="none"),
-                               CR2.plot + theme(legend.position="none"),
-                               nrow=1),
-                   mylegend, nrow=2,heights=c(10, 1))
-
-ggsave(plot=p,paste0("./Plot_",filename,".png"), height=6, width=12, units='in', dpi=2000)
