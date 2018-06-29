@@ -3,7 +3,8 @@ rm(list=ls())
 library(ggplot2)
 library(gridExtra)
 
-setwd("//fda.gov/wodc/CDER/Users05/Donglei.Yin/Result")
+#setwd("//fda.gov/wodc/CDER/Users05/Donglei.Yin/Result")
+setwd("C:/Users/Donglei/Documents/2018 summer intern at FDA/Simu_CI")
 
 filename='n10_99_101_100_equal_var_sdR1_1.33_12_rp200_0628_v2'
 
@@ -54,22 +55,25 @@ CR2.t <- reshape(CR2,
                  direction = "long")
 
 
-out<-Reduce(function(x, y) merge(x, y, by=c("SD","Method","id")), list(Power.t,CR1.t,CR2.t))
+#out<-Reduce(function(x, y) merge(x, y, by=c("SD","Method","id")), list(Power.t,CR1.t,CR2.t))
 
-power.plot <- ggplot(data=Power.t, aes(x=SD, y=Power, group = Method, colour=Method))+
+out.temp<-merge(x=Power.t, y=CR1.t, by=c("SD","Method","id"), all.x=TRUE)
+out<-merge(x=out.temp, y=CR2.t, by=c("SD","Method","id"), all.x=TRUE)
+
+power.plot <- ggplot(data=out, aes(x=SD, y=Power, group = Method, colour=Method))+
   geom_point()+
   geom_line()+
   theme(legend.position="bottom")+
   labs(x="SD",y="Power")
 
 
-CR1.plot <- ggplot(data=CR1.t, aes(x=SD, y=Coverage_Rate_1, group = Method, colour=Method))+
+CR1.plot <- ggplot(data=out, aes(x=SD, y=Coverage_Rate_1, group = Method, colour=Method))+
   geom_point()+
   geom_line()+
   theme(legend.position="bottom")+
   labs(x="SD",y="Coverage Rate (CI1)")
 
-CR2.plot <- ggplot(data=CR2.t, aes(x=SD, y=Coverage_Rate_2, group = Method, colour=Method))+
+CR2.plot <- ggplot(data=out, aes(x=SD, y=Coverage_Rate_2, group = Method, colour=Method))+
   geom_point()+
   geom_line()+
   theme(legend.position="bottom")+
