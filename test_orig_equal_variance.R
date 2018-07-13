@@ -180,7 +180,6 @@ for(k in 1:ksce){
         }
         return(cuhre(NDIM, NCOMP, fun.eFP1t1, lower=intmar.l, upper=intmar.u, flags= list(verbose=0, final=0))$value)
       }
-      # uniroot function
       rcd.simuCI1.tmp2 <- uniroot(function(delta) eFP1.int1(delta)-p.level, lower = 0, upper = 1.5*sd.ref)$root
     }
     eFP1.int2 <- function(delta){
