@@ -3,8 +3,8 @@ rm(list=ls())
 
 library(ggplot2)
 
-setwd("//fda.gov/wodc/CDER/Users05/Donglei.Yin/Result")
-
+#setwd("//fda.gov/wodc/CDER/Users05/Donglei.Yin/Result")
+setwd("C:/Users/Donglei/Documents/2018 summer intern at FDA/Simultaneous_CI--master")
 filename='n10_99_101_100_equal_var_sdR1_1.33_14_rp1000'
 #filename='n10_90_110_100_equal_var_sdR1_2_14_rp1000_0706'
 #filename='n10_95_105_100_equal_var_sdR1_2_14_rp1000_0709'
@@ -73,25 +73,33 @@ k=4
                     "Orig_FP","Orig_Power","Orig_CI1_D","Orig_CI1_CR","Orig_CI2_D","Orig_CI2_CR",
                     "Inte_FP","Inte_Power","Inte_CI1_D","Inte_CI1_CR","Inte_CI2_D","Inte_CI2_CR",
                     "LF_FP","LF_Power","LF_CI1_D","LF_CI1_CR","LF_CI2_D","LF_CI2_CR")
-  result=as.data.frame(temp[,c("Pair_123","Orig_Power","Inte_Power","LF_Power")])
+  result=as.data.frame(temp[,c("Pair_R1_R2","Pair_R1_T","Pair_R2_T","Pair_23","Pair_123","Orig_Power","Inte_Power","LF_Power")])
   
   result$diff_FN<-ifelse((result$Pair_123==0) & (result$Orig_Power==1 | (result$Inte_Power==1) | (result$LF_Power==1)),TRUE,FALSE)
   result$diff_FP<-ifelse((result$Pair_123==1) & (result$Orig_Power==0 | (result$Inte_Power==0) | (result$LF_Power==0)),TRUE,FALSE)
   result$diff_FN_all<-ifelse((result$Pair_123==0) & (result$Orig_Power==1 & (result$Inte_Power==1) & (result$LF_Power==1)),TRUE,FALSE)
+
   
-  index.1=which(complete.cases(temp), arr.ind=TRUE)
+  
+  #index.1=which(complete.cases(temp), arr.ind=TRUE)
   
   index.2=which(result$diff_FN_all==TRUE, arr.ind=TRUE)
   
-  index=intersect(index.1,index.2)
+  index.3=which(temp$Pair_R1_R2==0, arr.ind=TRUE)
   
+  index=intersect(index.2,index.3)
   
-  example.summ<-temp[index[1],]
-  example.summ.CI<-rcd.simuCI1[index[1],]
+
+  temp.select<-temp[index,][order(rowSums(is.na(temp[index,]))), ]
   
-  example.data<-matrix(rcd.data[index[1],],nrow=5,byrow = T)
-  example.mean<-rcd.mean[index[1],]
-  example.sd<-rcd.std[index[1],]
+  index=as.numeric(row.names(temp.select[1,]))
+  
+  example.summ<-temp.select[index,]
+  example.summ.CI<-rcd.simuCI1[index,]
+  
+  example.data<-matrix(rcd.data[index,],nrow=5,byrow = T)
+  example.mean<-rcd.mean[index,]
+  example.sd<-rcd.std[index,]
   
   write.csv(example.data,file = "./example_FN_data.csv")
   
@@ -102,7 +110,7 @@ k=4
   data$Group<-factor(data$Group,levels = c("US","EU","T"))
   
   plot <- ggplot(data=data, aes(x=Lot, y=value, group = Group, colour=Group,shape=Group))+
-    geom_point(size=3)+
+    geom_point(size=2)+
     theme(legend.position="right")+
     labs(x="Lot",y="Value")+
     scale_x_continuous(breaks=data$Lot)+
@@ -132,9 +140,9 @@ k=4
   Pairwise.result<-cbind(c(example.mean[1]-example.mean[2],example.mean[1]-example.mean[3],example.mean[2]-example.mean[3]),
                          (matrix(c(pairwise.12,pairwise.13,pairwise.23),byrow = T,nrow=3)))
   
-  Simu.CI<-matrix(c(example.summ$Orig_CI1_D*example.sd[4]*1.5,example.summ$Orig_CI2_D*example.sd[4]*1.5,example.summ$Orig_FP,
-             example.summ$Inte_CI1_D*example.sd[4]*1.5,example.summ$Inte_CI2_D*example.sd[4]*1.5,example.summ$Inte_FP,
-             example.summ$LF_CI1_D*example.sd[4]*1.5,example.summ$LF_CI2_D*example.sd[4]*1.5,example.summ$LF_FP),byrow = T,nrow = 3)
+  Simu.CI<-matrix(c(example.summ$Orig_CI1_D*example.sd[4],example.summ$Orig_CI2_D*example.sd[4],example.summ$Orig_FP,
+             example.summ$Inte_CI1_D*example.sd[4],example.summ$Inte_CI2_D*example.sd[4],example.summ$Inte_FP,
+             example.summ$LF_CI1_D*example.sd[4],example.summ$LF_CI2_D*example.sd[4],example.summ$LF_FP),byrow = T,nrow = 3)
   row.names(Simu.CI)<-c("Original Version","Integrated Version","Least Favaroble Version")
   colnames(Simu.CI)<-c("Type 1 Confidence Interval","Type 2 Confidence Interval","Fiducial probability")
   
