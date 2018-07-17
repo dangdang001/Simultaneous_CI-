@@ -3,8 +3,8 @@ rm(list=ls())
 
 library(ggplot2)
 
-#setwd("//fda.gov/wodc/CDER/Users05/Donglei.Yin/Result")
-setwd("C:/Users/Donglei/Documents/2018 summer intern at FDA/Simultaneous_CI--master")
+setwd("//fda.gov/wodc/CDER/Users05/Donglei.Yin/Result")
+#setwd("C:/Users/Donglei/Documents/2018 summer intern at FDA/Simultaneous_CI--master")
 filename='n10_99_101_100_equal_var_sdR1_1.33_14_rp1000'
 #filename='n10_90_110_100_equal_var_sdR1_2_14_rp1000_0706'
 #filename='n10_95_105_100_equal_var_sdR1_2_14_rp1000_0709'
@@ -21,7 +21,8 @@ mu.R1 <- 99
 mu.R2 <- 101
 mu.T <- 100
 n=10
-p.level=0.1
+alpha <- 0.05
+p.level <- 1 - 2*alpha
 
 out=c()
 
@@ -77,13 +78,11 @@ k=4
   
   result$diff_FN<-ifelse((result$Pair_123==0) & (result$Orig_Power==1 | (result$Inte_Power==1) | (result$LF_Power==1)),TRUE,FALSE)
   result$diff_FP<-ifelse((result$Pair_123==1) & (result$Orig_Power==0 | (result$Inte_Power==0) | (result$LF_Power==0)),TRUE,FALSE)
-  result$diff_FN_all<-ifelse((result$Pair_123==0) & (result$Orig_Power==1 & (result$Inte_Power==1) & (result$LF_Power==1)),TRUE,FALSE)
-
-  
+  result$diff_FN_12<-ifelse((result$Pair_123==0) & (result$Orig_Power==1 & (result$Inte_Power==1)),TRUE,FALSE)
   
   #index.1=which(complete.cases(temp), arr.ind=TRUE)
   
-  index.2=which(result$diff_FN_all==TRUE, arr.ind=TRUE)
+  index.2=which(result$diff_FN_12==TRUE, arr.ind=TRUE)
   
   index.3=which(temp$Pair_R1_R2==0, arr.ind=TRUE)
   

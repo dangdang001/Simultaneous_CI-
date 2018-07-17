@@ -18,10 +18,11 @@ dim(arcd_result)
 SD=c(1.33,2,4,6,8,10,12,14)
 
 mu.R1 <- 99
-mu.R2 <- 100
-mu.T <- 101
+mu.R2 <- 101
+mu.T <- 100
 n=10
-p.level=0.1
+alpha <- 0.05
+p.level <- 1 - 2*alpha
 
 out=c()
 
