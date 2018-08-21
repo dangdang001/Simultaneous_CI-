@@ -1,0 +1,27 @@
+06/26
+
+CEWIT computer (16 cores, linux, using mclapply):
+All 3 senario:
+50 Replicates: 3.5 hours
+
+Stemcell2 Server (48 cores, linux, using mclapply):
+
+All 3 senario:
+200 Replicates: 5 hours
+
+
+
+06/27
+
+FDA WORKSTATION (24 cores, windows, using parLapply):
+
+Equal variance: 
+
+200 Replicates: 1.35 hours
+1000 Replicates: 6.47 hours
+
+All 3 senario:
+200 Replicates: 4.67 hours
+
+1000 Replicates: 22.13 hours
+
